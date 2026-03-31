@@ -12,7 +12,7 @@ export async function getRandomUser() {
 
 export async function sendToGeminiIA(prompt) {
   const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+    model: "gemini-2.5-flash-lite", //gemini-3-flash-preview
     systemInstruction:
       "Responda de forma extremamente resumida e direta, usando tópicos se necessário. Seja transparente, caso não saiba de algo ou não tem certeza, deixe especificado",
     contents: prompt,
