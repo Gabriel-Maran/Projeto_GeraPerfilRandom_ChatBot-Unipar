@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Aula30032026",
-    "slug": "Aula30032026",
+    "name": "Projeto_cleiton_perfil_random",
+    "slug": "Projeto_cleiton_perfil_random",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,9 +21,6 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
     }
   }
 }
