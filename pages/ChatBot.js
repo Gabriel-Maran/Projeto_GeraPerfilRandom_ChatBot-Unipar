@@ -11,36 +11,44 @@ import { sendToGeminiIA } from "../api/api";
 import { useState } from "react";
 
 export function ChatBot() {
-  const [userPrompt, setUserPrompt] = useState(null);
-  const [iaResponse, setIAResponse] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [chat, setChat] = useState([{}]);
+  const [prompt, setPrompt] = useState(null);
+
+  function enviarParaIa(texto) {
+    setChat([...chat, { isUser: true, texto }]);
+    setPrompt("");
+    if (false) {
+      // prompt != null // Apenas para nn gastar tokens, desativei
+      const resposta = sendToGeminiIA(texto);
+      setChat([...chat, { isUser: false, resposta }]);
+    } else {
+      setErrorMessage("O input não pode ser null");
+    }
+  }
+
   return (
     <View style={styles.container}>
-      <Text>{iaResponse}</Text>
-      <View style={styles.userInteract}>
-        <TextInput
-          style={styles.input}
-          placeholder="Pergunte alguma coisa..."
-          onChangeText={(userPrompt) => setUserPrompt(userPrompt)}
-          defaultValue={userPrompt}
-          multiline={true}
-        />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            if (userPrompt != null) {
-              setIAResponse(sendToGeminiIA(userPrompt));
-            } else {
-              setErrorMessage("O input não pode ser null");
-              console.log("ABC");
-            }
-          }}
-        >
-          <Image
-            source={require("../assets/arrowUp.png")}
-            style={styles.image}
+      <View style={styles.containerInterno}>
+        <Text>TESTE</Text>
+        <View style={styles.userInteract}>
+          <TextInput
+            style={styles.input}
+            placeholder="Pergunte alguma coisa..."
+            onChangeText={(prompt) => setPrompt(prompt)}
+            defaultValue={prompt}
+            multiline={true}
           />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => enviarParaIa(userPrompt)}
+          >
+            <Image
+              source={require("../assets/arrowUp.png")}
+              style={styles.image}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
       <StatusBar style="auto" />
     </View>
@@ -50,29 +58,41 @@ export function ChatBot() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#ebebeb",
     alignItems: "center",
     justifyContent: "center",
   },
-  userInteract: {
-    backgroundColor: "#838282",
-    flexDirection: "row",
+  containerInterno: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
+    maxHeight: 700,
     width: 340,
+    borderRadius: 35,
+    boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.2);",
+  },
+  userInteract: {
+    position: "absolute",
+    bottom: 30,
+    backgroundColor: "#f0f0f0",
+    flexDirection: "row",
+    width: 300,
     borderWidth: 2,
-    borderColor: "#838282",
+    borderColor: "#cacaca",
     borderRadius: 35,
     borderStyle: "solid",
     padding: 15,
-    position: "absolute",
-    bottom: 90,
   },
   input: {
     alignContent: "center",
-    color: "#e4e1e1",
+    color: "#4e4e4e",
     outlineColor: "#ffffff",
-    width: 270,
+    width: 250,
   },
   button: {
+    borderColor: "#cacaca",
+    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
     width: 40,
