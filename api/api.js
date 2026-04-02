@@ -10,6 +10,7 @@ export async function getRandomUser() {
   return data.results[0];
 }
 
+// Envia e recebe a resposta da IA
 export async function sendToGeminiIA(prompt) {
   let response = null;
   try {
