@@ -6,22 +6,28 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
+  FlatList,
 } from "react-native";
 import { sendToGeminiIA } from "../api/api";
 import { useState } from "react";
 
 export function ChatBot() {
   const [errorMessage, setErrorMessage] = useState(null);
-  const [chat, setChat] = useState([{}]);
+  const [chat, setChat] = useState([{ id: 0, isUser: false, response: "" }]);
   const [prompt, setPrompt] = useState(null);
 
   function enviarParaIa(texto) {
-    setChat([...chat, { isUser: true, texto }]);
+    setChat([
+      ...chat,
+      { id: crypto.randomUUID(), isUser: false, response: texto },
+    ]);
     setPrompt("");
-    if (false) {
-      // prompt != null // Apenas para nn gastar tokens, desativei
+    if (prompt != null) {
       const resposta = sendToGeminiIA(texto);
-      setChat([...chat, { isUser: false, resposta }]);
+      setChat([
+        ...chat,
+        { id: crypto.randomUUID(), isUser: false, response: resposta },
+      ]);
     } else {
       setErrorMessage("O input não pode ser null");
     }
@@ -30,7 +36,16 @@ export function ChatBot() {
   return (
     <View style={styles.container}>
       <View style={styles.containerInterno}>
-        <Text>TESTE</Text>
+        <Text>
+          <FlatList
+            data={chat}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <Text style={styles.textList}>{item.response}</Text>
+            )}
+            style={styles.list}
+          />
+        </Text>
         <View style={styles.userInteract}>
           <TextInput
             style={styles.input}
@@ -41,7 +56,7 @@ export function ChatBot() {
           />
           <TouchableOpacity
             style={styles.button}
-            onPress={() => enviarParaIa(userPrompt)}
+            onPress={() => enviarParaIa(prompt)}
           >
             <Image
               source={require("../assets/arrowUp.png")}
@@ -88,7 +103,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     color: "#4e4e4e",
     outlineColor: "#ffffff",
-    width: 250,
+    width: 230,
   },
   button: {
     borderColor: "#cacaca",
@@ -105,5 +120,11 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 100,
     backgroundColor: "#ffffff",
+  },
+  textList: {
+    color: "#000000",
+  },
+  list: {
+    height: 500,
   },
 });
