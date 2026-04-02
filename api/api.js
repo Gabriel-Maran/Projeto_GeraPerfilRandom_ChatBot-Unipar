@@ -11,15 +11,25 @@ export async function getRandomUser() {
 }
 
 export async function sendToGeminiIA(prompt) {
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash-lite", //gemini-3-flash-preview
-    systemInstruction:
-      "Responda de forma extremamente resumida e direta, usando tópicos se necessário. Seja transparente, caso não saiba de algo ou não tem certeza, deixe especificado",
-    contents: prompt,
-    config: {
-      temperature: 0.1,
-    },
-  });
-  console.log(response.text);
-  return response.text;
+  let response = null;
+  try {
+    response = await ai.models.generateContent({
+      model: "gemini-2.5-flash-lite",
+      //model: "gemini-3-flash-preview",
+      systemInstruction:
+        "Responda de forma extremamente resumida e direta. " +
+        "NÃO utilize formatação Markdown (como asteriscos, hashtags ou negrito). " +
+        "Retorne apenas texto puro. " +
+        "Seja transparente: caso não saiba de algo, especifique.",
+      contents: prompt,
+      config: {
+        temperature: 0.1,
+      },
+    });
+    const cleanText = response.text.replace(/[*#_~]/g, "");
+    console.log(cleanText);
+    return cleanText;
+  } catch (ex) {
+    return "Limite de API excedido. Tente novamente mais tarde.";
+  }
 }

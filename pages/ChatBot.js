@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
   Text,
@@ -13,78 +12,103 @@ import { useState } from "react";
 
 export function ChatBot() {
   const [errorMessage, setErrorMessage] = useState(null);
-  const [chat, setChat] = useState([{ id: 0, isUser: false, response: "" }]);
+  const [chat, setChat] = useState([]);
   const [prompt, setPrompt] = useState(null);
 
-  function enviarParaIa(texto) {
-    setChat([
-      ...chat,
-      { id: crypto.randomUUID(), isUser: false, response: texto },
-    ]);
+  async function enviarParaIa(texto) {
+    texto = texto.trim();
+    if (texto == "" || texto == null) return;
     setPrompt("");
-    if (prompt != null) {
-      const resposta = sendToGeminiIA(texto);
-      setChat([
-        ...chat,
-        { id: crypto.randomUUID(), isUser: false, response: resposta },
-      ]);
-    } else {
-      setErrorMessage("O input não pode ser null");
+
+    var textUser = {
+      id: (Date.now() - Math.random()).toString(),
+      isUser: true,
+      response: texto,
+    };
+    setChat((chatAnterior) => [...chatAnterior, textUser]);
+
+    try {
+      const resposta = await sendToGeminiIA(texto);
+      const isErrorResposta =
+        resposta === "Limite de API excedido. Tente novamente mais tarde.";
+      var respostaAPI = {
+        id: (Date.now() - Math.random()).toString(),
+        isUser: false,
+        isError: isErrorResposta,
+        response: resposta,
+      };
+      setChat((chatAnterior) => [...chatAnterior, respostaAPI]);
+    } catch (error) {
+      console.error("Erro na chamada da API:", error);
     }
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.containerInterno}>
-        <Text>
+    <View style={styles.containerInterno}>
+      <Text>
+        {chat.length > 0 && (
           <FlatList
             data={chat}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <Text style={styles.textList}>{item.response}</Text>
+              <View
+                style={
+                  item.isError
+                    ? styles.listError
+                    : item.isUser
+                      ? styles.listUser
+                      : styles.listIA
+                }
+              >
+                <Text
+                  style={
+                    item.isError
+                      ? styles.textListError
+                      : item.isUser
+                        ? styles.textListUser
+                        : styles.textListIA
+                  }
+                >
+                  {item.response}
+                </Text>
+              </View>
             )}
             style={styles.list}
           />
-        </Text>
-        <View style={styles.userInteract}>
-          <TextInput
-            style={styles.input}
-            placeholder="Pergunte alguma coisa..."
-            onChangeText={(prompt) => setPrompt(prompt)}
-            defaultValue={prompt}
-            multiline={true}
+        )}
+      </Text>
+      <View style={styles.userInteract}>
+        <TextInput
+          style={styles.input}
+          placeholder="Pergunte alguma coisa..."
+          onChangeText={(prompt) => setPrompt(prompt)}
+          defaultValue={prompt}
+          value={prompt}
+          multiline={true}
+        />
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => enviarParaIa(prompt)}
+        >
+          <Image
+            source={require("../assets/arrowUp.png")}
+            style={styles.image}
           />
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => enviarParaIa(prompt)}
-          >
-            <Image
-              source={require("../assets/arrowUp.png")}
-              style={styles.image}
-            />
-          </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
       </View>
-      <StatusBar style="auto" />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ebebeb",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   containerInterno: {
     flex: 1,
     backgroundColor: "#ffffff",
     alignItems: "center",
-    justifyContent: "center",
     maxHeight: 700,
     width: 340,
-    borderRadius: 35,
+    borderBottomLeftRadius: 35,
+    borderBottomEndRadius: 35,
     boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.2);",
   },
   userInteract: {
@@ -102,7 +126,7 @@ const styles = StyleSheet.create({
   input: {
     alignContent: "center",
     color: "#4e4e4e",
-    outlineColor: "#ffffff",
+    outlineStyle: "none",
     width: 230,
   },
   button: {
@@ -121,10 +145,38 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: "#ffffff",
   },
-  textList: {
+  textListUser: {
+    backgroundColor: "#6366F1",
+    borderTopLeftRadius: 8,
+    borderBottomLeftRadius: 8,
+    borderBottomEndRadius: 8,
+    padding: 15,
+    width: 230,
+    color: "#ffffff",
+  },
+  textListIA: {
+    backgroundColor: "#efeeee",
+    borderTopRightRadius: 8,
+    borderBottomLeftRadius: 8,
+    borderBottomEndRadius: 8,
+    padding: 15,
+    width: 230,
     color: "#000000",
   },
+  textListError: {
+    backgroundColor: "#b74646",
+    borderRadius: 8,
+    padding: 15,
+    width: 230,
+    color: "#000000",
+    textAlign: "center",
+    color: "#ffffff",
+  },
+  listIA: { alignItems: "flex-start", marginTop: 20, textAlign: "justify" },
+  listUser: { alignItems: "flex-end", marginTop: 20, textAlign: "justify" },
+  listError: { alignItems: "center", marginTop: 20, textAlign: "justify" },
   list: {
-    height: 500,
+    height: 535,
+    width: 310,
   },
 });
