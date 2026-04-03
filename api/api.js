@@ -4,7 +4,6 @@ import { useState } from "react";
 //npm install @google/generative-ai
 const ai = new GoogleGenAI({ apiKey: process.env.EXPO_PUBLIC_API_KEY });
 
-
 // Pega Perfil Aleatorio de usuario
 export async function getRandomUser() {
   try {
@@ -28,7 +27,8 @@ export async function sendToGeminiIA(prompt) {
         "Responda de forma extremamente resumida e direta. " +
         "NÃO utilize formatação Markdown (como asteriscos, hashtags ou negrito). " +
         "Retorne apenas texto puro. " +
-        "Seja transparente: caso não saiba de algo, especifique.",
+        "Seja transparente: caso não saiba de algo, especifique." +
+        "Responde em português brasileiro",
       contents: prompt,
       config: {
         temperature: 0.1,

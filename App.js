@@ -15,7 +15,14 @@ export default function App() {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity
-          style={styles.buttonHeader}
+          style={[
+            styles.buttonsHeader,
+            isChatBot && {
+              borderTopLeftRadius: 35,
+              borderBottomWidth: 1,
+              backgroundColor: "#e6e6e6",
+            },
+          ]}
           onPress={() => setIsChatBot(false)}
         >
           <View style={styles.titleRandomUserView}>
@@ -23,11 +30,18 @@ export default function App() {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.buttonHeader}
+          style={[
+            styles.buttonsHeader,
+            !isChatBot && {
+              borderTopRightRadius: 35,
+              borderBottomWidth: 1,
+              backgroundColor: "#e6e6e6",
+            },
+          ]}
           onPress={() => setIsChatBot(true)}
         >
           <View style={styles.titleChatView}>
-            <Text style={styles.titleChatText}>ChatBot</Text>
+            <Text style={[styles.titleChatText]}> ChatBot</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -42,22 +56,20 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ebebeb",
     justifyContent: "center",
     alignItems: "center",
-    boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.2);",
   },
   header: {
     marginTop: 1,
     flexDirection: "row",
-    height: 60,
+    backgroundColor: "#ffffff",
+    height: 90,
     alignItems: "center",
     justifyContent: "center",
     borderTopLeftRadius: 35,
     borderTopEndRadius: 35,
     width: 340,
-    borderBottomWidth: 1,
-    backgroundColor: "#ffffff",
+    boxShadow: "0px 10px 15px -5px rgba(0, 0, 0, 0.2);",
   },
   titleChatText: {
     textAlign: "center",
@@ -69,18 +81,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "500",
   },
-  buttonHeader: {
-    justifyContent: "center",
-    width: 170,
-    height: 60,
-  },
   titleChatView: {
-    height: 60,
+    height: 90,
     borderLeftWidth: 1,
     justifyContent: "center",
   },
   titleRandomUserView: {
-    height: 60,
+    height: 90,
     justifyContent: "center",
+  },
+  buttonsHeader: {
+    justifyContent: "center",
+    width: 170,
+    height: 90,
   },
 });

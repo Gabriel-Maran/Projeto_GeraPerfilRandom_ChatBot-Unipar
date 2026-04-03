@@ -11,7 +11,6 @@ import { sendToGeminiIA } from "../api/api";
 import { useState } from "react";
 
 export function ChatBot() {
-  const [errorMessage, setErrorMessage] = useState(null);
   const [chat, setChat] = useState([]);
   const [prompt, setPrompt] = useState(null);
 
@@ -105,11 +104,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
     alignItems: "center",
-    maxHeight: 700,
+    maxHeight: 670,
     width: 340,
     borderBottomLeftRadius: 35,
     borderBottomEndRadius: 35,
-    boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.2);",
+    boxShadow: "0px 10px 15px -5px rgba(0, 0, 0, 0.2);",
   },
   userInteract: {
     position: "absolute",
@@ -176,7 +175,7 @@ const styles = StyleSheet.create({
   listUser: { alignItems: "flex-end", marginTop: 20, textAlign: "justify" },
   listError: { alignItems: "center", marginTop: 20, textAlign: "justify" },
   list: {
-    height: 535,
+    height: 558,
     width: 310,
   },
 });
