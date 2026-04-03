@@ -1,13 +1,20 @@
 import { GoogleGenAI } from "@google/genai";
+import { useState } from "react";
 
 //npm install @google/generative-ai
 const ai = new GoogleGenAI({ apiKey: process.env.EXPO_PUBLIC_API_KEY });
 
+
 // Pega Perfil Aleatorio de usuario
 export async function getRandomUser() {
-  const response = await fetch("https://randomuser.me");
-  const data = await response.json();
-  return data.results[0];
+  try {
+    const response = await fetch("https://randomuser.me/api/");
+    const data = await response.json();
+    return data.results[0];
+  } catch (error) {
+    console.error("Erro ao buscar dados:", error);
+    return null;
+  }
 }
 
 // Envia e recebe a resposta da IA
