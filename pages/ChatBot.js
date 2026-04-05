@@ -45,6 +45,22 @@ export function ChatBot() {
   return (
     <View style={styles.containerInterno}>
       <Text>
+        {chat.length == 0 && (
+          <View style={styles.chatEmptyView}>
+            <View style={styles.ctnImgChatEmpty}>
+              <Image
+                source={require("../assets/chat.png")}
+                style={styles.imgChatEmpty}
+              />
+            </View>
+            <View style={styles.ctnTextChatEmpty}>
+              <Text style={styles.textChatEmpty}>
+                Dê um oi para o Chat! Tire dúvidas sobre o perfil ou fale sobre
+                o que quiser
+              </Text>
+            </View>
+          </View>
+        )}
         {chat.length > 0 && (
           <FlatList
             data={chat}
@@ -109,6 +125,31 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 35,
     borderBottomEndRadius: 35,
     boxShadow: "0px 10px 15px -5px rgba(0, 0, 0, 0.2);",
+  },
+  chatEmptyView: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 540,
+    gap: 15,
+  },
+  ctnImgChatEmpty: {
+    width: 70,
+    height: 70,
+    backgroundColor: "#f6f6f6",
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imgChatEmpty: {
+    width: 40,
+    height: 40,
+  },
+  ctnTextChatEmpty: {
+    width: 250,
+  },
+  textChatEmpty: {
+    textAlign: "center",
+    color: "#525252",
   },
   userInteract: {
     position: "absolute",
